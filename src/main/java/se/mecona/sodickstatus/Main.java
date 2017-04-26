@@ -8,6 +8,9 @@ package se.mecona.sodickstatus;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -15,30 +18,51 @@ import javax.imageio.ImageIO;
  * @author Mcx8
  */
 public class Main {
-    
-    private static final String SCREEN_SHOT_CMD = "\"C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe\" controlvm \"IE8 - Win7\" screenshotpng Test.png";
-    private static final String PATH_TO_SCREEN_SHOT = "C:\\Users\\Mcx8\\Documents\\NetBeansProjects\\SodickStatus\\Test.png";
-    private static final String PATH_TO_PR_IMAGE = "C:\\Users\\Mcx8\\Documents\\NetBeansProjects\\SodickStatus\\pr.png";
-    private static final String PATH_TO_STATUS_IMAGE = "C:\\Users\\Mcx8\\Documents\\NetBeansProjects\\SodickStatus\\status.png";
-    
+
+    private static final String QUOTE_CHAR = "\"";
+    private static final String BASE_PATH = "D:\\Mats Dokument\\Dropbox\\Screenshots\\";
+    private static final String SCREEN_SHOT_CMD = "\"C:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe\" controlvm \"IE8 - Win7\" screenshotpng "
+            + QUOTE_CHAR + BASE_PATH + "Test.png" + QUOTE_CHAR;
+    private static final String PATH_TO_SCREEN_SHOT = BASE_PATH + "Test.png";
+    private static final String PATH_TO_PR_IMAGE = BASE_PATH + "pr.png";
+    private static final String PATH_TO_STATUS_IMAGE = BASE_PATH + "status.png";
+
     public static void main(String[] args) {
+        while (true) {
+            doScreenshot();
+            try {
+                sleep(60000);
+            } catch (InterruptedException ex) {
+                
+            }
+        }
+    }
+
+    private static void doScreenshot() {
         System.out.println("Starting");
         System.out.println("Taking screenshot");
         try {
             Process process = Runtime.getRuntime().exec(SCREEN_SHOT_CMD);
+            int processOutput = process.waitFor();
+            System.out.println("Return code " + processOutput);
+            System.out.println("Reading screenshot");
             BufferedImage image = ImageIO.read(new File(PATH_TO_SCREEN_SHOT));
 
             BufferedImage prImage = image.getSubimage(420, 222, 40, 20);
             File prFile = new File(PATH_TO_PR_IMAGE);
+            System.out.println("Writing procent ready image");
             ImageIO.write(prImage, "png", prFile);
 
             image = ImageIO.read(new File(PATH_TO_SCREEN_SHOT));
             BufferedImage statusImage = image.getSubimage(187, 378, 295, 22);
             File statusFile = new File(PATH_TO_STATUS_IMAGE);
+            System.out.println("Writing status image");
             ImageIO.write(statusImage, "png", statusFile);
 
         } catch (IOException ex) {
             System.out.println("Exception " + ex.getMessage());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
