@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import static java.lang.Thread.sleep;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -28,14 +31,23 @@ public class Main {
     private static final String PATH_TO_STATUS_IMAGE = BASE_PATH + "status.png";
 
     public static void main(String[] args) {
-        while (true) {
-            doScreenshot();
-            try {
-                sleep(60000);
-            } catch (InterruptedException ex) {
-                
+        ScheduledExecutorService scheduler = 
+                Executors.newScheduledThreadPool(1);
+        
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                            doScreenshot();
             }
-        }
+        } , 0, 60, TimeUnit.SECONDS);
+        
+//        while (true) {
+//            try {
+//                sleep(60000);
+//            } catch (InterruptedException ex) {
+//                
+//            }
+//        }
     }
 
     private static void doScreenshot() {
