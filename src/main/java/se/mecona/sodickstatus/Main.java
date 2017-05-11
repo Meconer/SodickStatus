@@ -71,10 +71,9 @@ public class Main {
             System.out.println("Writing status image");
             ImageIO.write(statusImage, "png", statusFile);
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             System.out.println("Exception " + ex.getMessage());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception type " + ex.toString());
         }
     }
 
